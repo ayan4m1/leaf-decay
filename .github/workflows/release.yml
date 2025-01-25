@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - mc-version: '1.21.4'
+            yarn-version: '1.21.4+build.8'
+            fabric-version: '0.16.10'
+            fabric-api-version: '0.115.0+1.21.4'
+          - mc-version: '1.21.3'
+            yarn-version: '1.21.3+build.2'
+            fabric-version: '0.16.10'
+            fabric-api-version: '0.114.0+1.21.3'
+          - mc-version: '1.21.1'
+            yarn-version: '1.21.1+build.3'
+            fabric-version: '0.16.10'
+            fabric-api-version: '0.115.0+1.21.1'
+          - mc-version: '1.21'
+            yarn-version: '1.21+build.9'
+            fabric-version: '0.16.10'
+            fabric-api-version: '0.102.0+1.21'
+          - mc-version: '1.20.4'
+            yarn-version: '1.20.4+build.3'
+            fabric-version: '0.16.10'
+            fabric-api-version: '0.97.2+1.20.4'
+          - mc-version: '1.20.1'
+            yarn-version: '1.20.1+build.10'
+            fabric-version: '0.16.10'
+            fabric-api-version: '0.92.3+1.20.1'
+          - mc-version: '1.16.5'
+            yarn-version: '1.16.5+build.10'
+            fabric-version: '0.16.10'
+            fabric-api-version: '0.42.0+1.16'
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build JAR with Gradle
+        run: |
+          ./gradlew \
+            -PminecraftVersion=${{ matrix.mc-version }} \
+            -PyarnMappingVersion=${{ matrix.yarn-version }} \
+            -PfabricVersion=${{ matrix.fabric-version }} \
+            -PfabricApiVersion=${{ matrix.fabric-api-version }} \
+            assemble
+          mv build/libs/leaf-decay-*.jar .
+      - name: Upload JAR as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.mc-version }}
+          path: ./leaf-decay-*.jar
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - name: Download JAR from artifact
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./leaf-decay-*.jar
