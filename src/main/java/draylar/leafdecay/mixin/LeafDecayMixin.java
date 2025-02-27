@@ -14,7 +14,6 @@ import net.minecraft.util.math.random.Random;
 
 @Mixin(LeavesBlock.class)
 public class LeafDecayMixin {
-
 	@Inject(
 			method = "randomTick",
 			at = @At(

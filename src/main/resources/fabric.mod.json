@@ -10,7 +10,7 @@
     "ayan4m1"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/leaf-decay",
+    "homepage": "https://legacy.curseforge.com/minecraft/mc-mods/modern-leaf-decay",
     "sources": "https://github.com/ayan4m1/leaf-decay",
     "issues": "https://github.com/ayan4m1/leaf-decay/issues"
   },
@@ -23,7 +23,7 @@
     ]
   },
   "mixins": [
-    "leafdecay.mixins.json"
+    "${mixinPath}"
   ],
   "depends": {
     "fabricloader": ">=0.14.0",
