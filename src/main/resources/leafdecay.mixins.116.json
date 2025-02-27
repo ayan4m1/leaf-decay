@@ -3,7 +3,7 @@
   "package": "draylar.leafdecay.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "LeafDecayMixin",
+    "LeafDecay116Mixin",
     "LogBreak116Mixin"
   ],
   "injectors": {

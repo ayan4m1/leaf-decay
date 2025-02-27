@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
+def mcVersionInt = Integer.parseInt(project.mixinName);
 version = project.modVersion + '-' + project.minecraftVersion
 group = project.mavenGroup
 
@@ -16,11 +17,14 @@ repositories {
 }
 
 loom {
-    splitEnvironmentSourceSets()
-    mods {
-        "leaf-decay" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
+    if (mcVersionInt != 116) {
+        splitEnvironmentSourceSets()
+
+        mods {
+            "leaf-decay" {
+                sourceSet sourceSets.main
+                sourceSet sourceSets.client
+            }
         }
     }
 }
@@ -46,6 +50,22 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 21
+}
+
+sourceSets {
+    main {
+        java {
+            if (mcVersionInt == 116) {
+                exclude {
+                    "draylar/leafdecay/mixin/LeafDecayMixin"
+                }
+            } else {
+                exclude {
+                    "draylar/leafdecay/mixin/LeafDecay116Mixin"
+                }
+            }
+        }
+    }
 }
 
 java {
