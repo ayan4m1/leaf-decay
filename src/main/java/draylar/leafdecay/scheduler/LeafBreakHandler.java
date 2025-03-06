@@ -8,10 +8,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LeafBreakHandler {
 
@@ -19,9 +16,10 @@ public class LeafBreakHandler {
 
     public static void init() {
         ServerTickEvents.END_SERVER_TICK.register(tick -> {
-            List<FutureBlockBreak> nearbyFutureBreakOrigins = new ArrayList<>();
+            var nearbyFutureBreakOrigins = new ArrayList<FutureBlockBreak>();
+            var iterator = breakList.iterator();
 
-            for(Iterator<FutureBlockBreak> iterator = breakList.iterator(); iterator.hasNext();) {
+            while (iterator.hasNext()) {
                 FutureBlockBreak leafBreak = iterator.next();
                 // should be broken
                 if (leafBreak.getElapsedTime() >= leafBreak.getMaxTime()) {
@@ -43,28 +41,22 @@ public class LeafBreakHandler {
 
     public static void addNearbyFutureBreaks(ServerWorld world, BlockPos pos) {
         // check all nearby leaf blocks
-        for (Direction direction : Direction.values()) {
-            BlockPos offset = new BlockPos(pos.offset(direction, 1));
+        // ensure new position is a leaf and that the break list doesn't already contain it
+        Arrays.stream(Direction.values()).map(direction -> new BlockPos(pos.offset(direction, 1))).forEach(offset -> {
             BlockState newState = world.getBlockState(offset);
-
-            // ensure new position is a leaf and that the break list doesn't already contain it
             if (newState.getBlock() instanceof LeavesBlock && !breakListContains(offset)) {
                 // if the leaf would naturally decay, add it to the break list
                 if (!newState.get(LeavesBlock.PERSISTENT) && newState.get(LeavesBlock.DISTANCE) == 7) {
                     LeafBreakHandler.addFutureBreak(new FutureBlockBreak(world, offset, 5));
                 }
             }
-        }
+        });
     }
 
     private static boolean breakListContains(BlockPos offset) {
-        for(FutureBlockBreak futureBreak : breakList) {
-            if(futureBreak.getPos().equals(offset)) {
-                return true;
-            }
-        }
-
-        return false;
+        return breakList.stream().anyMatch(futureBreak ->
+                futureBreak.getPos().equals(offset)
+        );
     }
 
 
