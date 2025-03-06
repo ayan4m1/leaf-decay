@@ -58,6 +58,7 @@ sourceSets {
             if (mcVersionInt == 116) {
                 exclude {
                     "draylar/leafdecay/mixin/LeafDecayMixin"
+                    "draylar/leafdecay/mixin/LogBreak121Mixin"
                     "draylar/leafdecay/scheduler/LogBreak121Handler"
                 }
             } else {
