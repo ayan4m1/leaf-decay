@@ -1,6 +1,6 @@
 package draylar.leafdecay.mixin;
 
-import draylar.leafdecay.scheduler.LogBreakHandler;
+import draylar.leafdecay.scheduler.LogBreak121Handler;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -17,6 +17,6 @@ public class LogBreak121Mixin {
             at = @At("TAIL")
     )
     private void afterBreak(World world, BlockPos pos, BlockState state, PlayerEntity player, CallbackInfoReturnable<BlockState> cir) {
-        LogBreakHandler.handleBreak(world, pos, state);
+        LogBreak121Handler.handleBreak(world, pos, state);
     }
 }

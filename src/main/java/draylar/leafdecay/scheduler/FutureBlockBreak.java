@@ -49,12 +49,10 @@ public class FutureBlockBreak {
         world.setBlockState(pos, Blocks.AIR.getDefaultState());
 
         if (!world.isClient) {
-            List<ItemStack> drops = Block.getDroppedStacks(state, world, pos, null);
-            DefaultedList<ItemStack> defaultedDropList = DefaultedList.ofSize(drops.size(), ItemStack.EMPTY);
+            var drops = Block.getDroppedStacks(state, world, pos, null);
+            var defaultedDropList = DefaultedList.ofSize(drops.size(), ItemStack.EMPTY);
 
-            for (int i = 0; i < drops.size(); i++) {
-                defaultedDropList.set(i, drops.get(i));
-            }
+            defaultedDropList.addAll(drops);
 
             ItemScatterer.spawn(world, pos, defaultedDropList);
         }
