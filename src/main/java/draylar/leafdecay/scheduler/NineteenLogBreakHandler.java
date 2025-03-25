@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LogBreakHandler {
+public class NineteenLogBreakHandler {
     @Unique
     private static final Set<Block> LOG_BLOCKS = new HashSet<>(Arrays.asList(
             Blocks.ACACIA_LOG,
@@ -19,8 +19,7 @@ public class LogBreakHandler {
             Blocks.JUNGLE_LOG,
             Blocks.MANGROVE_LOG,
             Blocks.OAK_LOG,
-            Blocks.SPRUCE_LOG,
-            Blocks.PALE_OAK_LOG
+            Blocks.SPRUCE_LOG
     ));
 
     public static void handleBreak(World world, BlockPos pos, BlockState state) {

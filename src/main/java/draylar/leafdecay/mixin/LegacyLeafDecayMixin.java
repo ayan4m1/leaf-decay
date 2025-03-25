@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Random;
 
 @Mixin(LeavesBlock.class)
-public class LeafDecay116Mixin {
+public class LegacyLeafDecayMixin {
 	@Inject(
 			method = "randomTick",
 			at = @At(

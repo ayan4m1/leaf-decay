@@ -17,7 +17,7 @@ repositories {
 }
 
 loom {
-    if (mcVersionInt != 116) {
+    if (mcVersionInt > 117) {
         splitEnvironmentSourceSets()
 
         mods {
@@ -46,6 +46,24 @@ processResources {
         expand  "version": project.version,
                 "mixinPath": "leafdecay.mixins.${project.mixinName}.json"
     }
+
+    if (mcVersionInt < 119) {
+        from 'src/main/java/draylar/leafdecay/scheduler' include '.java'
+        into 'src/main/java/draylar/leafdecay/scheduler' rename {
+            String fileName -> fileName.replace('PreNineteenLogBreakHandler', 'LegacyLogBreakHandler')
+        }
+        filter {
+            String line -> line.replaceAll('PreNineteen', 'Legacy')
+        }
+    } else if (mcVersionInt == 119) {
+        from 'src/main/java/draylar/leafdecay/scheduler' include '.java'
+        into 'src/main/java/draylar/leafdecay/scheduler' rename {
+            String fileName -> fileName.replace('NineteenLogBreakHandler', 'LegacyLogBreakHandler')
+        }
+        filter {
+            String line -> line.replaceAll('Nineteen', 'LegacyHam')
+        }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -55,16 +73,23 @@ tasks.withType(JavaCompile).configureEach {
 sourceSets {
     main {
         java {
-            if (mcVersionInt == 116) {
+            if (mcVersionInt < 119) {
                 exclude {
                     "draylar/leafdecay/mixin/LeafDecayMixin"
-                    "draylar/leafdecay/mixin/LogBreak121Mixin"
-                    "draylar/leafdecay/scheduler/LogBreak121Handler"
+                    "draylar/leafdecay/mixin/LogBreakMixin"
+                    "draylar/leafdecay/scheduler/LogBreakHandler"
+                }
+            } else if (mcVersionInt == 119) {
+                exclude {
+                    "draylar/leafdecay/mixin/LegacyLeafDecayMixin"
+                    "draylar/leafdecay/mixin/LogBreakMixin"
+                    "draylar/leafdecay/scheduler/LegacyLogBreakHandler"
                 }
             } else {
                 exclude {
-                    "draylar/leafdecay/mixin/LogBreak116Mixin"
-                    "draylar/leafdecay/mixin/LeafDecay116Mixin"
+                    "draylar/leafdecay/mixin/LegacyLeafDecayMixin"
+                    "draylar/leafdecay/mixin/LegacyLogBreakMixin"
+                    "draylar/leafdecay/scheduler/LegacyLogBreakHandler"
                 }
             }
         }
